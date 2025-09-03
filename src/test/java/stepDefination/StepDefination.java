@@ -1,7 +1,6 @@
 package stepDefination;
 
 import io.cucumber.java.en.*;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -20,6 +19,7 @@ public class StepDefination {
 	static Response response;
 	Utility util = new Utility();
 	TestData data = new TestData();
+	static String bookId1;
 
 	@Given("Add Book API Paylaod with {string} and {string}")
 	public void add_book_api_paylaod_with_and(String isbn, String aisle) throws FileNotFoundException {
@@ -36,6 +36,8 @@ public class StepDefination {
 			response = request.when().post(res.getResourceUrl());
 		} else if (method.equalsIgnoreCase("get")) {
 			response = request.when().get(res.getResourceUrl());
+		} else if (method.equalsIgnoreCase("delete")) {
+			response = request.when().delete(res.getResourceUrl());
 		}
 
 	}
@@ -43,6 +45,7 @@ public class StepDefination {
 	@Then("the statuscode of response is {int}")
 	public void the_statuscode_of_response_is(int expectedStatusCode) {
 		assertEquals(response.getStatusCode(), expectedStatusCode);
+
 	}
 
 	@Then("{string} in response body should be {string}")
@@ -50,14 +53,26 @@ public class StepDefination {
 
 		assertEquals(util.getResponseValue(response, key), value);
 
+		if (key.equalsIgnoreCase("Msg") && value.equalsIgnoreCase("successfully added")) {
+			bookId1 = util.getResponseValue(response, "ID");
+		}
+
 	}
 
 	@Given("Get Book API Paylaod")
 	public void get_book_api_paylaod() throws FileNotFoundException {
+		request = given().spec(util.getRequestSpecification()).queryParam("ID", bookId1);
+	}
 
-		String bookId = util.getResponseValue(response, "ID");
+	@Given("Delete book API Paylaod")
+	public void delete_book_api_paylaod() throws FileNotFoundException {
+		request = given().spec(util.getRequestSpecification()).body(data.getDeleteBookPaylaod(bookId1));
+	}
 
-		request = given().spec(util.getRequestSpecification()).queryParam("ID", bookId);
+	@Then("The Response of getBook API contain {string} {string}")
+	public void the_response_of_get_book_api_contain(String key, String expectedValue) {
+		in_response_body_should_be(key,expectedValue);
+
 	}
 
 }
