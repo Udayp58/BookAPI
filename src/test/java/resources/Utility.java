@@ -11,18 +11,16 @@ import io.restassured.specification.RequestSpecification;
 
 public class Utility {
 
-	RequestSpecification req;
-
+	static RequestSpecification req;
+	
 	public RequestSpecification getRequestSpecification() throws FileNotFoundException {
-		if(req ==null)
-		{
-		PrintStream log = new PrintStream(new FileOutputStream("log.txt"));
-		req = new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
-				.addHeader("Content-Type", "application/json").addFilter(RequestLoggingFilter.logRequestTo(log))
-				.addFilter(ResponseLoggingFilter.logResponseTo(log))
-				.build();
+		if (req == null) {
+			PrintStream log = new PrintStream(new FileOutputStream("log.txt"));
+			req = new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
+					.addHeader("Content-Type", "application/json").addFilter(RequestLoggingFilter.logRequestTo(log))
+					.addFilter(ResponseLoggingFilter.logResponseTo(log)).build();
 
-		return req;
+			return req;
 		}
 		return req;
 	}
