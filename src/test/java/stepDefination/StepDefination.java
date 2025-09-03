@@ -17,7 +17,7 @@ import resources.Utility;
 public class StepDefination {
 
 	RequestSpecification request;
-	Response response;
+	static Response response;
 	Utility util = new Utility();
 	TestData data = new TestData();
 
@@ -34,6 +34,8 @@ public class StepDefination {
 
 		if (method.equalsIgnoreCase("post")) {
 			response = request.when().post(res.getResourceUrl());
+		} else if (method.equalsIgnoreCase("get")) {
+			response = request.when().get(res.getResourceUrl());
 		}
 
 	}
@@ -45,10 +47,17 @@ public class StepDefination {
 
 	@Then("{string} in response body should be {string}")
 	public void in_response_body_should_be(String key, String value) {
-		String res = response.asString();
-		JsonPath js = new JsonPath(res);
-		assertEquals(js.getString(key), value);
 
+		assertEquals(util.getResponseValue(response, key), value);
+
+	}
+
+	@Given("Get Book API Paylaod")
+	public void get_book_api_paylaod() throws FileNotFoundException {
+
+		String bookId = util.getResponseValue(response, "ID");
+
+		request = given().spec(util.getRequestSpecification()).queryParam("ID", bookId);
 	}
 
 }

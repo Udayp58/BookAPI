@@ -11,7 +11,7 @@ And "Msg" in response body should be "successfully added"
 
 Examples:
 |isbn|aisle|
-|uday|4239|
+|uday|6339|
 
 
 
@@ -23,4 +23,10 @@ And "Msg" in response body should be "Book Already Exists"
 
 Examples:
 |isbn|aisle|
-|uday|4239|
+|uday|6339|
+
+
+Scenario: Validate get Book API by Id
+Given Get Book API Paylaod 
+When user hit "GetBookAPI" with http "get" method
+Then the statuscode of response is 200

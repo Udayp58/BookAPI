@@ -2,7 +2,9 @@ package resources;
 
 public enum ResourceAPI {
 
-	AddBookAPI("Library/Addbook.php");
+	AddBookAPI("Library/Addbook.php"),
+	GetBookAPI("Library/GetBook.php");
+	
 
 	private String resource;
 
